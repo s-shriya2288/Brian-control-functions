@@ -138,16 +138,15 @@ export const BrainModel: React.FC = () => {
   
   useFrame((state, delta) => {
     const storeState = useBrainStore.getState();
-    const target = new THREE.Vector3(...storeState.cameraTarget);
-    if (storeState.selectedRegion) {
-      const regionPos = new THREE.Vector3(...brainRegions[storeState.selectedRegion].position);
-      // When a specific area is found/selected, move camera closely 
-      const camPos = new THREE.Vector3().copy(regionPos).add(new THREE.Vector3(0, 1.5, 5));
-      camera.position.lerp(camPos, 0.03);
-      camera.lookAt(regionPos);
-    } else {
-      camera.position.lerp(new THREE.Vector3(0, 0, 12), 0.02);
-      camera.lookAt(0, 0, 0);
+    // Smooth panning of OrbitControls target instead of forcing camera.position
+    const ctrl = state.controls as any;
+    if (ctrl) {
+      let targetPos = new THREE.Vector3(0, 0, 0);
+      if (storeState.selectedRegion) {
+        targetPos = new THREE.Vector3(...brainRegions[storeState.selectedRegion].position);
+      }
+      ctrl.target.lerp(targetPos, 0.05);
+      ctrl.update();
     }
 
     if (rootGroupRef.current && useBrainStore.getState().isRotating) {

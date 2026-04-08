@@ -23,7 +23,7 @@ export const useBrainStore = create<BrainState>((set) => ({
   setSelectedRegion: (id) => set({ selectedRegion: id }),
   isSimulatingThoughts: false,
   setSimulatingThoughts: (isSimulating) => set({ isSimulatingThoughts: isSimulating }),
-  isRotating: true,
+  isRotating: false,
   setRotating: (isRotating) => set({ isRotating }),
   cameraTarget: [0, 0, 0],
   setCameraTarget: (target) => set({ cameraTarget: target }),

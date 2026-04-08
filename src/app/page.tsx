@@ -22,9 +22,10 @@ export default function Home() {
             <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={1} />
             <Environment preset="city" />
             
-            {/* Controls: We removed autoRotate because the model itself now rotates continuously */}
+            {/* Controls */}
             <OrbitControls 
-              enablePan={false} 
+              makeDefault
+              enablePan={true} 
               enableZoom={true} 
               minDistance={5} 
               maxDistance={30}
