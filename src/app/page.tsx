@@ -13,22 +13,21 @@ export default function Home() {
       
       {/* 3D Canvas Background */}
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 10], fov: 45 }}>
+        <Canvas camera={{ position: [0, 0, 12], fov: 45 }}>
           <Suspense fallback={null}>
             {/* Environment and Stars */}
-            <color attach="background" args={['#050510']} />
-            <fog attach="fog" args={['#050510', 10, 30]} />
-            <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+            <color attach="background" args={['#020205']} />
+            <fog attach="fog" args={['#020205', 15, 40]} />
+            <Stars radius={100} depth={50} count={6000} factor={4} saturation={0} fade speed={1} />
             <Environment preset="city" />
             
-            {/* Controls */}
+            {/* Controls: We removed autoRotate because the model itself now rotates continuously */}
             <OrbitControls 
               enablePan={false} 
               enableZoom={true} 
               minDistance={5} 
-              maxDistance={20}
-              autoRotate
-              autoRotateSpeed={0.5}
+              maxDistance={30}
+              dampingFactor={0.05}
             />
             
             {/* The Brain */}
