@@ -7,8 +7,10 @@ import { BrainModel } from '../components/BrainModel';
 import { OverlayUI } from '../components/OverlayUI';
 import { SidePanel } from '../components/SidePanel';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { useBrainStore } from '../store/useBrainStore';
 
 export default function Home() {
+  const isRotating = useBrainStore(state => state.isRotating);
   return (
     <main className="w-screen h-screen bg-black overflow-hidden relative font-sans">
       
@@ -30,13 +32,15 @@ export default function Home() {
               minDistance={5} 
               maxDistance={30}
               dampingFactor={0.05}
+              autoRotate={isRotating}
+              autoRotateSpeed={2.0}
             />
             
             {/* The Brain */}
             <BrainModel />
             
             <EffectComposer>
-              <Bloom luminanceThreshold={1} mipmapBlur intensity={0.5} radius={0.4} />
+              <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} radius={0.8} />
             </EffectComposer>
           </Suspense>
         </Canvas>
