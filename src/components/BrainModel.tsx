@@ -18,7 +18,7 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
   const isSelected = selectedRegion === region.id;
 
   const targetScale = isSelected 
-    ? new THREE.Vector3(...region.scale).multiplyScalar(1.25) 
+    ? new THREE.Vector3(...region.scale).multiplyScalar(1.6) // Make it much bigger
     : new THREE.Vector3(...region.scale);
   
   useFrame((state) => {
@@ -34,15 +34,14 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.MeshPhysicalMaterial;
       if (isSelected) {
-        // Soft pulse for selected
-        const pulse = 1.2 + Math.sin(state.clock.elapsedTime * 4) * 0.3;
-        material.emissiveIntensity = THREE.MathUtils.lerp(material.emissiveIntensity, pulse, 0.1);
+        // Soft constant glow, absolutely no blinking
+        material.emissiveIntensity = THREE.MathUtils.lerp(material.emissiveIntensity, 0.6, 0.1);
         material.opacity = THREE.MathUtils.lerp(material.opacity, 1.0, 0.1);
       } else {
-        // Dim unselected completely
-        const targetIntensity = isHovered ? 0.8 : 0.02;
+        // Preserve color for unselected regions
+        const targetIntensity = isHovered ? 0.2 : 0.0;
         material.emissiveIntensity = THREE.MathUtils.lerp(material.emissiveIntensity, targetIntensity, 0.1);
-        material.opacity = THREE.MathUtils.lerp(material.opacity, 0.35, 0.1);
+        material.opacity = THREE.MathUtils.lerp(material.opacity, 0.85, 0.1);
       }
     }
   });
@@ -59,13 +58,13 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
         <MeshDistortMaterial
           color={region.color}
           emissive={region.color}
-          emissiveIntensity={0.15}
-          roughness={0.4}
-          metalness={0.1}
-          clearcoat={1}
-          clearcoatRoughness={0.2}
-          distort={0.5} 
-          speed={isSelected ? 3 : 1.5} 
+          emissiveIntensity={0.0}
+          roughness={0.7}
+          metalness={0.0}
+          clearcoat={0.1}
+          clearcoatRoughness={0.8}
+          distort={0.15} 
+          speed={isSelected ? 1 : 0.4} 
           transparent
           opacity={0.85}
         />
