@@ -34,8 +34,8 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
     if (meshRef.current) {
       const material = meshRef.current.material as THREE.MeshPhysicalMaterial;
       if (isSelected) {
-        // Bright pulse for selected
-        const pulse = 2.0 + Math.sin(state.clock.elapsedTime * 6) * 1.0;
+        // Soft pulse for selected
+        const pulse = 1.2 + Math.sin(state.clock.elapsedTime * 4) * 0.3;
         material.emissiveIntensity = THREE.MathUtils.lerp(material.emissiveIntensity, pulse, 0.1);
         material.opacity = THREE.MathUtils.lerp(material.opacity, 1.0, 0.1);
       } else {

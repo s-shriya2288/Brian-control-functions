@@ -40,7 +40,7 @@ export default function Home() {
             <BrainModel />
             
             <EffectComposer>
-              <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} radius={0.8} />
+              <Bloom luminanceThreshold={1} mipmapBlur intensity={0.4} radius={0.4} />
             </EffectComposer>
           </Suspense>
         </Canvas>
