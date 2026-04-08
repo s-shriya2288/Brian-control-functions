@@ -6,6 +6,7 @@ import { OrbitControls, Stars, Environment } from '@react-three/drei';
 import { BrainModel } from '../components/BrainModel';
 import { OverlayUI } from '../components/OverlayUI';
 import { SidePanel } from '../components/SidePanel';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
 export default function Home() {
   return (
@@ -32,6 +33,10 @@ export default function Home() {
             
             {/* The Brain */}
             <BrainModel />
+            
+            <EffectComposer>
+              <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} />
+            </EffectComposer>
           </Suspense>
         </Canvas>
       </div>

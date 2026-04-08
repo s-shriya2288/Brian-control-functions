@@ -65,7 +65,7 @@ export const OverlayUI: React.FC = () => {
       <div className="pointer-events-auto flex justify-center w-full gap-4">
         
         <button
-          onClick={() => setRotating(!isRotating)}
+          onClick={() => setRotating(!useBrainStore.getState().isRotating)}
           className={`flex items-center gap-3 px-6 py-4 rounded-full font-bold text-xs tracking-widest transition-all duration-300 border ${
             isRotating 
             ? 'bg-blue-600/20 text-blue-300 border-blue-500 shadow-blue-500/50 shadow-[0_0_20px_-5px_currentColor]' 
@@ -73,7 +73,7 @@ export const OverlayUI: React.FC = () => {
           }`}
         >
           <Zap className={`w-4 h-4 ${isRotating ? 'text-blue-400 animate-spin-slow' : ''}`} />
-          {isRotating ? 'STOP ROTATION' : 'START ROTATION'}
+          {isRotating ? 'STOP ROTATE' : 'ROTATE ON YOUR OWN'}
         </button>
 
         <button

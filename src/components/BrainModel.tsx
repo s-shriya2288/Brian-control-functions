@@ -137,9 +137,10 @@ export const BrainModel: React.FC = () => {
   const rootGroupRef = useRef<THREE.Group>(null);
   
   useFrame((state, delta) => {
-    const target = new THREE.Vector3(...cameraTarget);
-    if (selectedRegion) {
-      const regionPos = new THREE.Vector3(...brainRegions[selectedRegion].position);
+    const storeState = useBrainStore.getState();
+    const target = new THREE.Vector3(...storeState.cameraTarget);
+    if (storeState.selectedRegion) {
+      const regionPos = new THREE.Vector3(...brainRegions[storeState.selectedRegion].position);
       // When a specific area is found/selected, move camera closely 
       const camPos = new THREE.Vector3().copy(regionPos).add(new THREE.Vector3(0, 1.5, 5));
       camera.position.lerp(camPos, 0.03);
@@ -149,7 +150,7 @@ export const BrainModel: React.FC = () => {
       camera.lookAt(0, 0, 0);
     }
 
-    if (rootGroupRef.current && isRotating) {
+    if (rootGroupRef.current && useBrainStore.getState().isRotating) {
         rootGroupRef.current.rotation.y += delta * 0.2;
     }
   });
