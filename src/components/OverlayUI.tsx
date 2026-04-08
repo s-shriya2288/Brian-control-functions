@@ -10,6 +10,8 @@ export const OverlayUI: React.FC = () => {
   const setSelectedRegion = useBrainStore(state => state.setSelectedRegion);
   const isSimulating = useBrainStore(state => state.isSimulatingThoughts);
   const setSimulating = useBrainStore(state => state.setSimulatingThoughts);
+  const isRotating = useBrainStore(state => state.isRotating);
+  const setRotating = useBrainStore(state => state.setRotating);
   const setCameraTarget = useBrainStore(state => state.setCameraTarget);
 
   useEffect(() => {
@@ -60,7 +62,20 @@ export const OverlayUI: React.FC = () => {
       </div>
 
       {/* Bottom Controls */}
-      <div className="pointer-events-auto flex justify-center w-full">
+      <div className="pointer-events-auto flex justify-center w-full gap-4">
+        
+        <button
+          onClick={() => setRotating(!isRotating)}
+          className={`flex items-center gap-3 px-6 py-4 rounded-full font-bold text-xs tracking-widest transition-all duration-300 border ${
+            isRotating 
+            ? 'bg-blue-600/20 text-blue-300 border-blue-500 shadow-blue-500/50 shadow-[0_0_20px_-5px_currentColor]' 
+            : 'bg-white/10 text-white border-white/20 hover:bg-white/20 hover:scale-105'
+          }`}
+        >
+          <Zap className={`w-4 h-4 ${isRotating ? 'text-blue-400 animate-spin-slow' : ''}`} />
+          {isRotating ? 'STOP ROTATION' : 'START ROTATION'}
+        </button>
+
         <button
           onClick={() => setSimulating(!isSimulating)}
           className={`flex items-center gap-3 px-8 py-4 rounded-full font-bold text-sm tracking-widest transition-all duration-300 shadow-[0_0_30px_-5px_currentColor] border ${

@@ -8,6 +8,8 @@ interface BrainState {
   setSelectedRegion: (id: BrainRegionID | null) => void;
   isSimulatingThoughts: boolean;
   setSimulatingThoughts: (isSimulating: boolean) => void;
+  isRotating: boolean;
+  setRotating: (isRotating: boolean) => void;
   cameraTarget: [number, number, number];
   setCameraTarget: (target: [number, number, number]) => void;
   searchQuery: string;
@@ -21,6 +23,8 @@ export const useBrainStore = create<BrainState>((set) => ({
   setSelectedRegion: (id) => set({ selectedRegion: id }),
   isSimulatingThoughts: false,
   setSimulatingThoughts: (isSimulating) => set({ isSimulatingThoughts: isSimulating }),
+  isRotating: true,
+  setRotating: (isRotating) => set({ isRotating }),
   cameraTarget: [0, 0, 0],
   setCameraTarget: (target) => set({ cameraTarget: target }),
   searchQuery: '',

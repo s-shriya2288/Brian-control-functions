@@ -18,7 +18,7 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
   const isSelected = selectedRegion === region.id;
 
   const targetScale = isSelected 
-    ? new THREE.Vector3(...region.scale).multiplyScalar(1.2) 
+    ? new THREE.Vector3(...region.scale).multiplyScalar(1.25) 
     : new THREE.Vector3(...region.scale);
   
   useFrame((state) => {
@@ -28,6 +28,19 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
       
       // Smooth scaling when selected
       groupRef.current.scale.lerp(targetScale, 0.1);
+    }
+    
+    // Pulsating Intense Glow when selected
+    if (meshRef.current) {
+      const material = meshRef.current.material as THREE.MeshPhysicalMaterial;
+      if (isSelected) {
+        // Pulse intensely between 1.5 and 3.0
+        const pulse = 2.0 + Math.sin(state.clock.elapsedTime * 6) * 1.0;
+        material.emissiveIntensity = THREE.MathUtils.lerp(material.emissiveIntensity, pulse, 0.1);
+      } else {
+        const targetIntensity = isHovered ? 0.8 : 0.15;
+        material.emissiveIntensity = THREE.MathUtils.lerp(material.emissiveIntensity, targetIntensity, 0.1);
+      }
     }
   });
 
@@ -40,17 +53,16 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
         onClick={(e) => { e.stopPropagation(); setSelectedRegion(isSelected ? null : region.id); }}
       >
         <sphereGeometry args={[1, 64, 64]} />
-        {/* MeshDistortMaterial gives an organic, changing, squishy feel reminiscent of biological tissue */}
         <MeshDistortMaterial
           color={region.color}
           emissive={region.color}
-          emissiveIntensity={isSelected ? 0.8 : (isHovered ? 0.5 : 0.1)}
+          emissiveIntensity={0.15}
           roughness={0.4}
           metalness={0.1}
           clearcoat={1}
           clearcoatRoughness={0.2}
-          distort={0.4} // Level of distortion to look like organic wrinkly tissue
-          speed={1.5} // Speed of the wobble
+          distort={0.5} 
+          speed={isSelected ? 3 : 1.5} 
           transparent
           opacity={0.85}
         />
@@ -58,8 +70,8 @@ const OrganicLobe: React.FC<{ region: BrainRegion }> = ({ region }) => {
 
       {/* Label for selected region */}
       {isSelected && (
-        <Html position={[0, 1.5, 0]} center zIndexRange={[100, 0]}>
-          <div className="bg-black/60 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm font-bold pointer-events-none whitespace-nowrap border border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.3)] select-none">
+        <Html position={[0, 1.8, 0]} center zIndexRange={[100, 0]}>
+          <div className="bg-white/10 backdrop-blur-xl px-5 py-2 rounded-full text-white text-md font-extrabold pointer-events-none whitespace-nowrap border border-white/50 shadow-[0_0_30px_rgba(255,255,255,0.6)] select-none">
             {region.name}
           </div>
         </Html>
@@ -96,7 +108,6 @@ const SimulateParticles = () => {
     if (pointsRef.current && isSimulatingThoughts) {
       const pos = pointsRef.current.geometry.attributes.position.array as Float32Array;
       for(let i=0; i<particleCount; i++) {
-        // Create an upward electrical signaling effect
         pos[i*3 + 1] += Math.sin(state.clock.elapsedTime * 8 + i) * 0.03;
         pos[i*3] += Math.cos(state.clock.elapsedTime * 6 + i) * 0.02;
       }
@@ -121,17 +132,16 @@ export const BrainModel: React.FC = () => {
   const { camera } = useThree();
   const selectedRegion = useBrainStore((state) => state.selectedRegion);
   const cameraTarget = useBrainStore((state) => state.cameraTarget);
+  const isRotating = useBrainStore((state) => state.isRotating);
   
   const rootGroupRef = useRef<THREE.Group>(null);
   
   useFrame((state, delta) => {
-    // Camera targeting smooth transition
     const target = new THREE.Vector3(...cameraTarget);
-    // When a region is selected, move closer, else remain at wide view
     if (selectedRegion) {
       const regionPos = new THREE.Vector3(...brainRegions[selectedRegion].position);
-      // Offset so we don't zoom directly into the center
-      const camPos = new THREE.Vector3().copy(regionPos).add(new THREE.Vector3(0, 1, 6));
+      // When a specific area is found/selected, move camera closely 
+      const camPos = new THREE.Vector3().copy(regionPos).add(new THREE.Vector3(0, 1.5, 5));
       camera.position.lerp(camPos, 0.03);
       camera.lookAt(regionPos);
     } else {
@@ -139,16 +149,13 @@ export const BrainModel: React.FC = () => {
       camera.lookAt(0, 0, 0);
     }
 
-    // CONTINUOUS ROTATION OF THE ENTIRE BRAIN GROUP
-    if (rootGroupRef.current) {
-        // Slow rotation around the Y axis
+    if (rootGroupRef.current && isRotating) {
         rootGroupRef.current.rotation.y += delta * 0.2;
     }
   });
 
   return (
     <group ref={rootGroupRef}>
-      {/* Dynamic Dramatic Lighting */}
       <ambientLight intensity={0.3} />
       <directionalLight position={[10, 15, 10]} intensity={1.5} color="#ffffff" shadow-mapSize={[1024, 1024]} castShadow />
       <directionalLight position={[-10, -10, -10]} intensity={0.8} color="#45b7d1" />
